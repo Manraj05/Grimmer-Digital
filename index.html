@@ -463,20 +463,182 @@
     ::-webkit-scrollbar-thumb { background: rgba(107,33,168,.5); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(192,132,252,.6); }
 
-    /* ── Responsive ── */
-    @media (max-width: 768px) {
-      .section { padding: 72px 0; }
-      .two-col { grid-template-columns: 1fr !important; gap: 48px !important; }
-      .stats-grid { grid-template-columns: 1fr 1fr !important; }
-      .three-col { grid-template-columns: 1fr !important; }
-      .form-row { grid-template-columns: 1fr !important; }
-      .footer-row { flex-direction: column; align-items: flex-start !important; }
-      .hero-grid { grid-template-columns: 1fr !important; }
-      .hero-visual { display: none !important; }
+    /* ── Tailwind critical fallbacks (ensure correct layout before CDN loads) ── */
+    /* These mirror what Tailwind generates so layout is correct immediately */
+    .hidden   { display: none !important; }
+    .flex     { display: flex; }
+    .flex-col { flex-direction: column; }
+    .items-center { align-items: center; }
+    .justify-content-between { justify-content: space-between; }
+    .w-full   { width: 100%; }
+    /* max-w-7xl + mx-auto + px-6 container pattern */
+    .max-w-7xl { max-width: 80rem; }
+    .mx-auto   { margin-left: auto; margin-right: auto; }
+    .px-6      { padding-left: 1.5rem; padding-right: 1.5rem; }
+    /* Responsive: md = min-width 768px */
+    @media (min-width: 768px) {
+      .md\:flex        { display: flex !important; }
+      .md\:inline-flex { display: inline-flex !important; }
+      .md\:hidden      { display: none !important; }
     }
+
+    /* ── Overflow protection (all viewports) ── */
+    html { overflow-x: hidden; }
+
+    /* ── Hide cursor on touch devices ── */
+    @media (pointer: coarse) {
+      #cursor-dot, #cursor-ring { display: none !important; }
+    }
+
+    /* ══════════════════════════════════════
+       TABLET / MOBILE  ≤ 768px
+    ══════════════════════════════════════ */
+    @media (max-width: 768px) {
+
+      /* Section spacing */
+      .section { padding: 64px 0; }
+
+      /* ── Hero ── */
+      #hero { min-height: 100svh; align-items: flex-start; padding-top: 0; }
+
+      /* Override inline padding-top:80px / padding-bottom:80px */
+      #hero .max-w-7xl {
+        padding-top: 52px !important;
+        padding-bottom: 40px !important;
+      }
+
+      /* Stack hero to single column with tighter gap */
+      .hero-grid {
+        grid-template-columns: 1fr !important;
+        gap: 36px !important;
+      }
+
+      /* Show browser mockup scaled down, centred below text */
+      .hero-visual {
+        display: flex !important;
+        justify-content: center;
+      }
+      .browser-frame {
+        width: min(320px, 90vw) !important;
+        animation: float-visual 6s ease-in-out infinite !important;
+      }
+      .browser-content { height: 185px !important; }
+      .browser-glow { display: none !important; }
+
+      /* Hero buttons: full-width, touch-friendly */
+      #hero .btn-primary,
+      #hero .btn-outline {
+        width: 100%;
+        justify-content: center;
+        min-height: 52px;
+        font-size: 15px !important;
+        padding: 16px 24px !important;
+      }
+      /* Stack button row vertically */
+      #hero .reveal.d3 { width: 100%; }
+
+      /* ── Navbar ── */
+      /* Hamburger: shown via md:hidden class + fallback CSS above */
+
+      /* ── Hero h1: reduce from 3rem (48px) so text fits without clipping ── */
+      #hero h1 {
+        font-size: 2.2rem !important;
+        letter-spacing: -.03em !important;
+        word-break: break-word;
+      }
+
+      /* ── Hero eyebrow: allow wrap on narrow screens ── */
+      #hero .pulse-dot + span { font-size: 11px !important; letter-spacing: .08em !important; }
+
+      /* ── Grid collapses ── */
+      .two-col   { grid-template-columns: 1fr !important; gap: 40px !important; }
+      .stats-grid { grid-template-columns: 1fr 1fr !important; }
+      .three-col  { grid-template-columns: 1fr !important; }
+      .form-row   { grid-template-columns: 1fr !important; }
+
+      /* ── Stats cards: reduce internal padding ── */
+      .stats-grid .card { padding: 32px 20px !important; }
+
+      /* ── Service cards: reduce internal padding ── */
+      #services .card { padding: 28px 24px !important; }
+
+      /* ── About section ── */
+      .two-col.about-grid-override { gap: 40px !important; }
+
+      /* ── Footer ── */
+      .footer-row { flex-direction: column; align-items: flex-start !important; gap: 20px; }
+
+      /* ── Accordion: taller for mobile text wrapping ── */
+      .acc-body.open { max-height: 380px; }
+
+      /* ── Portfolio image height ── */
+      .port-img-wrap img { height: 200px !important; }
+
+      /* ── Portfolio card padding ── */
+      .card .port-img-wrap + div { padding: 20px 20px !important; }
+
+      /* ── Scroll indicator: hide on mobile to avoid covering content ── */
+      .scroll-indicator { display: none; }
+
+      /* ── Hero spotlight: skip on mobile (performance) ── */
+      #hero-spotlight { display: none; }
+
+      /* ── Orbs: reduce opacity on mobile (battery/perf) ── */
+      .orb-a { opacity: .5; }
+      .orb-b { opacity: .4; }
+      .orb-c { opacity: .3; }
+    }
+
+    /* ══════════════════════════════════════
+       SMALL MOBILE  ≤ 480px
+    ══════════════════════════════════════ */
+    @media (max-width: 480px) {
+
+      /* Tighter section padding */
+      .section { padding: 52px 0; }
+
+      /* Slightly smaller hero padding */
+      #hero .max-w-7xl {
+        padding-top: 44px !important;
+        padding-bottom: 32px !important;
+      }
+
+      /* Reduce horizontal padding on all containers */
+      .max-w-7xl.mx-auto { padding-left: 16px !important; padding-right: 16px !important; }
+
+      /* Stats: keep 2-col but tighter */
+      .stats-grid .card { padding: 24px 14px !important; }
+      .stat-num { font-size: clamp(1.8rem, 7vw, 2.8rem) !important; }
+
+      /* Browser frame: fit tiny screens */
+      .browser-frame { width: min(280px, 86vw) !important; }
+      .browser-content { height: 160px !important; }
+
+      /* Service card text size */
+      #services .card h3 { font-size: 1.1rem !important; }
+
+      /* Hero h1 further reduced for tiny phones */
+      #hero h1 { font-size: 1.95rem !important; letter-spacing: -.025em !important; }
+
+      /* Reduce h2 letter-spacing for narrow widths */
+      h2 { letter-spacing: -.025em !important; }
+
+      /* Pricing card padding */
+      .pricing-card { padding: 36px 24px !important; }
+
+      /* Marquee font size */
+      .marquee-inner span { font-size: 11px !important; letter-spacing: .05em !important; }
+
+      /* Footer: stack all rows tightly */
+      footer { padding: 40px 0 24px !important; }
+    }
+
+    /* ══════════════════════════════════════
+       DESKTOP  ≥ 769px
+    ══════════════════════════════════════ */
     @media (min-width: 769px) {
       .stats-grid { grid-template-columns: repeat(4,1fr) !important; }
-      .three-col { grid-template-columns: repeat(3,1fr) !important; }
+      .three-col  { grid-template-columns: repeat(3,1fr) !important; }
     }
   </style>
 </head>
@@ -511,7 +673,7 @@
       <div style="display:flex;align-items:center;gap:16px;">
         <a href="#contact" class="btn-primary hidden md:inline-flex">Start a Project</a>
         <button id="ham" onclick="toggleMob()" aria-label="Menu"
-          style="display:none;flex-direction:column;gap:5px;padding:6px;background:none;border:none;" class="md:hidden flex-col">
+          style="display:flex;flex-direction:column;gap:5px;padding:8px;background:none;border:none;cursor:pointer;" class="md:hidden flex-col">
           <span style="width:22px;height:2px;background:#fff;border-radius:2px;display:block;transition:transform .25s ease,opacity .25s ease;" id="h1"></span>
           <span style="width:22px;height:2px;background:#fff;border-radius:2px;display:block;transition:opacity .25s ease;" id="h2"></span>
           <span style="width:22px;height:2px;background:#fff;border-radius:2px;display:block;transition:transform .25s ease,opacity .25s ease;" id="h3"></span>
